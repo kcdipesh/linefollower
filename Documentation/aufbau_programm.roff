@@ -1,0 +1,617 @@
+.COLLATE
+.CHAPTER 2
+.CHAPTER_STRING "Kapitel"
+.CHAPTER_TITLE "Aufbau des Programms"
+.START
+.\" Aufbau des Programmes
+.HEADING 1 "Arduino-SDK"
+Im Folgenden möchte ich die Arduino-Entwicklungsumgebung und
+dazugehörige Werkzeuge vorstellen.
+.PP
+.\".FT TR
+Zum Arduino-Projekt gehört neben der Hardware auch eine kleine IDE
+(Integrated Development Environment).
+Sie ist ein Fork der \*[IT]Wiring IDE\*[PREV] und ist in der Sprache Java
+geschrieben \[em]
+ist also weitestgehend plattformunabhängig.
+.FLOAT
+.PSPIC "Pictures/arduino_ide.eps" 4
+.BLOCKQUOTE
+Fenster der Arduino IDE
+.BLOCKQUOTE OFF
+.FLOAT OFF
+.PP
+Sie enthält rudimentäre Fähigkeiten etwa zur Verwaltung des
+Programmcodes oder zum Neueinspielen des Bootloaders bei unabsichtlichem
+Überschreiben.
+Ein Terminal zur Überwachung der seriellen Schnittstelle ist ebenfalls
+enthalten.
+Außerdem werden noch zahlreiche Bibliotheken,
+etwa zur Ansteuerung von Servomotoren oder LC-Bildschirmen mitgeliefert.
+
+.HEADING 2 "Programmierung von Arduinoboards"
+Nicht nur der Umgang mit Arduinos beim Aufbau von Schaltungen,
+sondern auch das Programmieren gestaltet sich als relativ einfacher
+Prozess.
+.PP
+Ein erster Vorteil zeigt sich dadurch,
+dass man Programme bequem über ein USB-Kabel auf die
+Arduino-Mikrocontroller überspielen kann.
+Diese verfügen dafür über einen voreingebrannten Bootloader,
+der dies ermöglicht und somit den Kauf eines dedizierten
+Programmiergerätes überflüssig macht.
+Der Arduino Uno baut über das USB-Kabel eine serielle Verbindung zum
+Computer auf,
+über die Programme auch miteinander kommunizieren können.
+Ein weiterer Vorteil entsteht durch die umfangreiche Dokumentation mit
+vielen Beispielen.
+.PP
+Den Fokus des Projektes auf Einfachheit zeigt sich beim Programmieren
+auf voller Länge.
+Nicht nur das Verschieben des Programmes auf das Board ist simpel,
+sondern auch die Entwicklungsumgebung ist relativ schlicht.
+Sie besteht zum größten Teil aus dem Codeeditor mit dem Sketch
+(Programm) und einer Fehlerkonsole.
+.PP
+Die Sketche für Arduino-Mikrocontroller werden in C/C++ geschrieben,
+was dem Vorhandensein einer guten C-Standardbibliothek für AVR-Proessor
+(avr-libc) und guren Compilern (avr-gcc) zu verschulden ist.
+Um die Komplexität beim Programmieren zu verringern,
+bestehen Arduino-Sketche in ihrer Grundform aus zwei Funktionen:
+.QUOTE
+.CODE
+void setup() {
+    ...
+}
+void loop() {
+    ...
+}
+.CODE OFF
+.QUOTE OFF
+Die Funktion
+.CODE
+setup()
+.CODE OFF
+wird beim Start einmalig aufgerufen und die
+Funktion
+.CODE
+loop()
+.CODE OFF
+wird danach in einer Endlosschleife ausgeführt.
+Dies entspricht dem Ablauf eines typischen Mikrocontrollerprogramms,
+so würde man anfänglich beispielsweise Pins einschalten und konfigurieren
+(dies würde in
+.CODE
+setup()
+.CODE OFF
+geschehen) und danach den Hauptteil ablaufen
+lassen,
+in dem etwa Sensoren abfragt und dann darauf reagiert (dafür wäre
+.CODE
+loop()
+.CODE OFF
+).
+Da man allerdings im Hintergrund immer noch in C/C++ programmiert und
+auch diesen Compiler verwendet,
+wird dieses Konstrukt einfach in folgendes umgewandelt\c
+.FOOTNOTE
+die Datei ``Arduino.h'' enthält die Definitionen für Arduinoeigene
+Funktionen
+.FOOTNOTE OFF
+.QUOTE
+.CODE
+#include <Arduino.h>
+int main(void) {
+    setup();
+
+    for(;;) {
+        loop();
+    }
+    return 0;
+}
+.CODE OFF
+.QUOTE OFF
+.PP
+Neben diesen Vereinfachungen kommt man bei der gewöhnlichen
+Arduinoprogrammierung ohne die Verwendung von Zeigern aus.
+.PP
+Möchte man ein Sketch für ein Arduinoboard schreiben,
+würde man das Programm in den Editorteil der Entwicklungsumgebung
+eingeben, den Arduino mit dem Computer verbinden und dann kompilieren
+und auf das Board kopieren.
+Etwaige Syntaxfehler oder dergleichen werden bei der Kompilation bereits
+erkannt und müssen behoben werden.
+Die Behebung von Programmfehlern,
+die zur Laufzeit auftreten,
+gestaltet sich allerdings durch die alleinige Verwendung einer seriellen
+Verbindung zwischen Controller und Computer als schwieriger,
+da man keinen direkten Zugriff auf prozessorinterne Register oder
+Arbeitsspeicher hat und man sein Sketch durch das Einfügen von
+Kontrollausgaben über die Verbindung zum Computer lösen muss.
+.PP
+Der Großteil der Arduinoprogrammierung fällt relativ einfach aus,
+da man jedoch im Hintergrund immer noch C/C++ arbeiten hat,
+stehen auch die Verwendung von Pointern oder etwa die Speicherverwaltung
+per `malloc()` für fortgeschrittene Programmierer zur Verfügung
+.HEADING 1 "Aufbau des Programms"
+.HEADING 2 "Grundriss"
+Um die den Programmcode übersichtlich zu halten,
+habe ich diesen in vier Dateien aufgeteilt.
+In der Datei
+.CODE
+linefollower.ino
+.CODE OFF
+sind die beiden Hauptfunktionen
+.CODE
+setup()
+.CODE OFF
+und
+.CODE
+loop()
+.CODE OFF
+enthalten,
+Teilaufgaben wurden ausgegliedert.
+So sind in ``
+.CODE
+control.h
+.CODE OFF
+\'' Funktionen für die Steuerung des Servomotors und des
+Gleischstrommotoren.
+Weiterhin sind in ``
+.CODE
+sensor.h
+.CODE OFF
+\'' Funktionen zum Kontrollieren der Sensoren.
+Die Ausgliederung von diversen Programmparametern in eine eigene Datei
+gestaltet sich im Falle eines Liniefolgers als sinnvoll,
+da man hier schnell Werte anpassen kann,
+um etwa das Fahrverhalten zu verbessern.
+Diese Optionen sind bei mir in der Datei ``
+.CODE
+config.h
+.CODE OFF
+\'',
+diese enthält keine Funktions-,
+jedoch zahlreiche Variablendefinitionen.
+.FLOAT FORCE
+.DS CB
+.PS
+.so Pictures/aufbau_programm.pic
+.PE
+Die Dateien des Linienfolgerprogramms
+.DE
+.FLOAT OFF
+.PP
+Zu meinem Programmierstil zu sagen ist,
+dass ich versucht habe mich möglichst an das prozedurale
+Programmierparadigma von C zu halten.
+Obwohl die inkludierten Bibliotheken (
+.CODE
+Servo.h
+.CODE OFF
+für den Servomotor und
+.CODE
+AFMotor.h
+.CODE OFF
+für die Motorsteuerung) beide im objektorientierten Stil zu handhaben
+sind,
+habe ich beispielsweise versucht,
+Methodenaufrufe in eigene Funktionen zu packen.
+Das liegt vor allem an persönlichen Präferenzen,
+da ich die prozedurale der objektorientierten Programmierung vorziehe.
+Außerdem habe ich im Gegensatz zur typischen Arduinoprogrammierung nicht
+mit der Verwendung von Pointern gegeizt.
+Dies liegt vor allem an Performance und speichertechnischen Gründen\c
+.FOOTNOTE
+Obwohl eine signifikante Steigerung der Geschwindigkeit zu bezweifeln
+wäre.
+.FOOTNOTE OFF
+Eine weitere auffällige Sache am Programmcode ist die häufige Verwendung
+des Typs ``
+.CODE
+uint8_t
+.CODE OFF
+\'' \[em]
+Dieser beinhaltet ganze Zahlen (integer) im Bereich von 0 bis 255
+(unsigned) und somit eine Größe von 8 Bit.
+Ich habe ihn im Code verwendet, um Speicherplatz zu sparen,
+da der Typ ``
+.CODE
+int
+.CODE OFF
+\'' 32 Bit groß ist und viele Variablenwerte während der Laufzeit nicht
+größer als 255 werden.
+Außerdem arbeitet der Prozessor des Arduino Uno (ein
+\*[IT]ATmega328\*[PREV]) nativ nur mit 8 Bit.
+.HEADING 2 "linefollower.ino"
+Die Hauptprogrammdatei beginnt mit Anweisungen für den Präprozessor,
+mehrere weitere Dateien in den Kopf des Programmes einzufügen.
+In der der Datei ``
+.CODE
+Arduino.h
+.CODE OFF
+\'' sind die Funktionsdefinitionen der Arduino-eigenen
+Standardfunktionen \[em]
+dieser wird normalerweise automatisch bei der Kompilation mit eingefügt.
+Danach folgt eine Typen- und mehrere Variablendeklarationen.
+Dabei fällt diese Zeile auf:
+.QUOTE
+.CODE
+static const size_t sensor_count =
+        LENGTH(sensor_ports);
+.CODE OFF
+.QUOTE OFF
+Die Schlüsselwörter ``
+.CODE
+static
+.CODE OFF
+\'' und ``
+.CODE
+const
+.CODE OFF
+\'' bedeuten, das auf die Variable nur innerhalb dieser Datei zugegriffen
+werden bzw.,
+dass sich ihr Inhalt während der Laufzeit nicht ändert.
+Interessant ist das Konstrukt ``
+.CODE
+LENGTH(sensor_port)
+.CODE OFF
+\'', dass eine Präprozessor-Direktive darstellt.
+Das bedeutet,
+dieser Text wird vor der Übersetzung des Programmcodes umgewandelt.
+Die Direktive wurde in
+.CODE
+sensor.h
+.CODE OFF
+definiert und wird später noch genauer erklärt.
+.PP
+Danach folgen die Initialisierungen von Motor, Servo und den Sensoren
+\[em]
+diese werden außerhalb der
+.CODE
+setup()
+.CODE OFF
+-Funktion deklariert,
+da sie in der kompletten Datei als globale Variablen zur Verfügung
+stehen sollen.
+.PP
+Die eigentliche
+.CODE
+setup()
+.CODE OFF
+-Funktion folgt danach.
+Innerhalb dieser kommen mehrere Funktionen der Arduinobibliothek zum
+Einsatz:
+.QUOTE
+.CODE
+void
+setup(void) {
+    \*[red]pinMode\*[black](led_pin, OUTPUT);
+    \*[red]pinMode\*[black](calibrate_button, \*[green]INPUT_PULLUP\*[black]);
+
+    servo->attach(servo_port);
+    servo->write(90);
+}
+.CODE OFF
+.QUOTE OFF
+.CODE
+pinMode()
+.CODE OFF
+setzt den Modus eines Anschluss Pins (in diesem Fall auf OUTPUT \[em]
+Ausgabe).
+.PP
+In der darauffolgenden
+.CODE
+loop()
+.CODE OFF
+-Funktion werden zwei weitere Arduinofunktionen aufgerufen:
+.LIST DASH
+.SHIFT_LIST 18p
+.ITEM
+.CODE
+digitalRead();
+.CODE OFF
+\[em]
+liest einen digitalen Pin aus
+.ITEM
+.CODE
+delay();
+.CODE OFF
+\[em]
+verzögert die weitere Ausführung des Programms um eine vorgegebene Zeit
+.LIST OFF
+.ILX CLEAR
+.SP
+.PP
+Danach sind zwei weitere Funktionen in
+.CODE
+linefollower.ino
+.CODE OFF
+deklariert.
+.CODE
+correct_vehicle
+.CODE OFF
+korregiert den Fahrweg des Fahrzeugs anhand von Sensordaten \[em]
+der genaue Algorithmus für die Steuerung wird später noch erklärt.
+Die Funktion
+.CODE
+blink()
+.CODE OFF
+wird dafür verwendet,
+eine LED aufblinken zu lassen bei der Kalibrierung der Sensoren.
+.HEADING 2 "control.h"
+Diese Datei enthält Funktionen für die Motor- und Servosteuerung.
+Die enthaltenen Funktionen sind relativ simpel,
+da sie nur Hüllen für die Methodenaufrufe der jeweiligen Objekte sind.
+Sie stellen grundlegende Funktionen für die Steuerung des Linienfolgers
+brereit,
+wie z.B. links/rechts lenken bzw. vorwärts/rückwärts fahren.
+.HEADING 2 "sensor.h"
+Alle Funktionen für die Ansteuerung der Sensoren sind in der Datei ``
+.CODE
+sensor.h
+.CODE OFF
+\'' zusammengefasst.
+Wirft man einen Blick in diese,
+so ist am Anfang die Direktive ``
+.CODE
+LENGTH()
+.CODE OFF
+\'' widerzufinden:
+.QUOTE
+.CODE
+#define LENGTH(X) (sizof(X) / sizeof(X[0])
+.CODE OFF
+.QUOTE OFF
+.PP
+Dies bedeutet,
+dass
+.CODE
+LENGTH(X)
+.CODE OFF
+vor der Übersetzung des Programms durch den nachfolgenden Ausdruck
+ersetzt wird (das
+.CODE
+X
+.CODE OFF
+wird entsprechend ausgetauscht).
+Mit Hilfe dieses Konstruktes kann die Anzahl der Elemente innerhalb
+eines Array bestimmt werden.
+Ich benötige dies,
+weil der Code auf eine bequeme Erweiterung der Sensoren auf fünf oder
+mehr erlauben soll.
+Damit dies funktioniert müssen mehrere Arrays,
+die verwendet werden um beispielsweise Messwerte zwischenzuspeichern,
+an die Anzahl der Sensoren angepasst werden.
+Dafür enthält die Datei
+.CODE
+config.h
+.CODE OFF
+die Definition für ein Array,
+in das die analogen Anschlüsse eingetragen werden,
+mit denen die Sensoren verbunden sind.
+Und anhand dessen Länge wird der restliche Programmcode beim Kompilieren
+angepasst.
+.PP
+Folgend ist die Definition eines
+.CODE
+struct
+.CODE OFF
+\[em]
+\*[IT]Structs\*[PREV] sind spezielle Datentypen,
+die mehrere Variablen verschiedenen Typs beinhalten können.
+Diese können die Arbeit mit Daten,
+die häufig zusammen verwendet werden,
+erleichtern,
+da z.B. Funktionsaufrufe kompakter werden und nur noch einen Parameter
+an Stelle von vielen annehmen.
+Ich benutze das struct hier,
+um das Pin zu speichern,
+an dem die Leuchtdioden angeschlossen sind sowie die analogen Pins,
+an denen sich die Photodioden befinden.
+Das letzte Feld enthält den Zeiger auf ein Array mit Startmesswerten der
+Sensoren,
+die etwa bei einer Kalibrierung bestimmt werden.
+.PP
+Die erste Funktion initialisiert ein Sensor-struct,
+indem der Speicher dafür reserviert wird und die Leuchtdioden
+eingeschaltet werden (via
+.CODE
+digitalWrite()
+.CODE OFF
+)
+.PP
+.CODE
+read_sensors()
+.CODE OFF
+liest die Sensoren aus und liefert einen Zeiger auf ein Array mit den
+Messwerten zurück.
+Um etwaige Schwankungen bei den einzelnen Messungen aus zu filtern,
+werden die Sensoren mehrmals abgefragt und danach ein Durchschnittswert
+gebildet.
+.PP
+.CODE
+calibrate_sensors()
+.CODE OFF
+befüllt das Startwerte-array des Sensor-structs (
+.CODE
+unsigned int *start_values
+.CODE OFF
+) mit Startwerten.
+.PP
+.CODE
+get_line_position()
+.CODE OFF
+liefert einen Zeiger auf ein Array zurück,
+in dem die Position der Linie unterhalb der Sensoren mittels boolescher
+Wahrheitswerte angezeigt ist.
+.HEADING 2 "config.h"
+Wie bereits erwähnt enthält diese Datei verschiedene Parameter.
+Hier kann man beispielsweise die Geschwindigkeit des Motors oder den
+Lenkwinkel einstellen.
+Interessant ist zum einen diese Zeile:
+.QUOTE
+.CODE
+static const uint8_t contrast_threshold;
+.CODE OFF
+.QUOTE OFF
+Mit ihr kann der Kontrastunterschied zwischen der Linie und dem
+Untergrund festgelegt werden.
+.PP
+In der Datei ist ebenfalls das Array mit den Analoganschlüssen der
+Photodioden enthalten:
+.QUOTE
+.CODE
+static const uint8_t sensor_ports = {A0, A1, A2};
+.CODE OFF
+.QUOTE OFF
+.HEADING 1 "Algorithmus und Funktionsweise"
+Nimmt man den Linienfolger erstmals in Betrieb,
+passiert nicht viel \[em]
+der Servomotor klackert kurz,
+danach ist Ruhe.
+Tatsächlich werden anfänglich nur die Variablen für die Steuerung von
+Motor, Servo und Sensoren initialisiert, eine LED aktiviert und der
+Servo gerade ausgerichtet.
+Der Mikrocontroller wartet danach auf das Drücken des,
+am Fahrzeug angebrachten weißen Knopfes, um voll durchstarten zu können.
+\[em] Tut man dies,
+blinkt die angebaute LED kurz auf und es wird damit begonnen,
+die Sensoren zu kalibrieren.
+D.h. die Sensoren werden mehrfach ausgelesen und deren Werte dann als
+Startwerte gespeichert.
+Man kann dann immer wieder Messwerte bestimmen und diese dann mit den
+Startwerten vergleichen um durch Änderung der Kontrastwerte ein Abkommen
+von der Fahrbahn zu erkennen.
+\[em]
+Dies setzt allerdings voraus,
+dass der Wagen beim Kalibrieren bereits auf der Linie platziert ist.
+.PP
+Dieser Ablauf befindet sich in der Hauptfunktion
+.CODE
+loop()
+.CODE OFF
+in
+.CODE
+linefolower.ino
+.CODE OFF
+. Diese Funktionen überprüft ständig,
+ob der Schalter gedrückt ist:
+.QUOTE
+.CODE
+if(digitalRead(calibrate_button) == HIGH) {
+    calibrate = true;
+    stop(motor);
+
+    return;
+}
+.CODE OFF
+.QUOTE OFF
+Hier wird geprüft,
+ob der Knopf \*[IT]nicht\*[PREV] gedrückt ist.
+Zu beachten ist hier,
+dass dieser digitale Anschluss folgender Maßen initialisiert wurde:
+.QUOTE
+.CODE
+pinMode(calibrate_button, INPUT_PULLUP);
+.CODE OFF
+.QUOTE OFF
+.CODE
+INPUT_PULLUP
+.CODE OFF
+bedeutet zwar,
+dass der Anschluss als Eingang eingesetzt wird,
+allerdings wird dieser dann intern an einen sog.
+\*[IT]pullup-Widerstand\*[PREV] und eine Spannung angeschlossen wird.
+Das bedeutet,
+im ausgeschalteten Zustand ist
+.CODE
+HIGH
+.CODE OFF
+zu messen,
+also eine anliegende Spannung,
+und
+.CODE
+LOW
+.CODE OFF
+wenn der Knopf gerückt wurde und die Spannung zur Masse abfließt.
+Dieser Anschlussmodus des Pins ist relativ komfortabel,
+das man sich sonst selbst um den Einbau eines Widerstandes kümmern muss,
+um einen Kurzschluss zu vermeiden.
+.PP
+Ist also der Knopf,
+werden die Sensoren zuerst kalibriert und danach wird der Motor
+eingeschaltet (via
+.CODE
+forward()
+.CODE OFF
+) und der Linienfolger fährt los.
+Danach werden immer wieder die zwei Funktionen aufgerufen:
+.QUOTE
+.CODE
+    position = get_line_position(&sensor, contrast_threshold,
+                                       read_passes);
+    correction = correct_vehicle(servo, position, correction);
+.CODE OFF
+.QUOTE OFF
+Zuerst
+.CODE
+get_line_position();
+.CODE OFF
+\[em]
+sie liefert ein Array mit der möglichen Position der Linie unterhalb der
+Sensoren zurück.
+Dabei liest sie die Sensoren aus und vergleicht diese mit den
+Startwerten der Kalibrierung.
+Überschreitet die Differenz dieser einen gewissen Schwellenwert (
+.CODE
+contrast_threshold
+.CODE OFF
+), so hat sich das Fahrzeug im Vergleich zur Linie auf dieser verschoben.
+Liefert die Funktion beispielsweise dieses Array zurück:
+.QUOTE
+.CODE
+{ 0, 1, 1 }
+.CODE OFF
+.QUOTE OFF
+bedeutet dies,
+dass sich die Linie nicht mehr unter dem mittleren Sensor befindet,
+sondern unter den rechten gewandert ist.
+.PP
+Die Funktion
+.CODE
+correct_vehicle();
+.CODE OFF
+nimmt die Werte von
+.CODE
+get_line_position();
+.CODE OFF
+an und steuert das Fahrzeug entsprechend.
+So würde die Funktion,
+bei den hier vorgegebenen vorherigen Messwerten,
+den Servo mitteilen,
+nach rechts zu lenken,
+damit die Linie wieder mittig unter den Sensoren liegt.
+Die Funktion liefert dann die Richtung zurück,
+in der sie das Fahrzeug korrigiert hat (dafür der Typ
+.CODE
+Direction
+.CODE OFF
+).
+Dieser Werte kann von der Funktion dann beim nächsten Aufruf wieder
+benutzt werden,
+um festzustellen,
+Richtung vorher gelenkt wurde.
+Würde beispielsweise die Funktion beim ersten Aufruf das Fahrzeug nach
+rechts lenken lassen,
+so würde sie dann erst einmal nur wieder gerade lenken,
+wenn die Messwerte bei einem zweiten Aufruf anzeigen,
+das sich die Linien nun unter dem anderen Sensor befindet.
+Dies wird gemacht,
+um ein heftiges Hin- und Herlenken zu vermeiden.
+.PP
+Die beiden Funktionen werden in der Schleife immer wieder aufgerufen und
+korrigieren die Fahrbahn des Fahrzeugs entsprechend.
+Drückt man nun den Knopf,
+so bleibt der Linienfolger wieder stehen.
+

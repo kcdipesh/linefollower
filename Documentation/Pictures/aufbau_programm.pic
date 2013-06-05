@@ -1,0 +1,12 @@
+lineht = 0.3
+circlerad = 0.35
+C1: circle "control.h"
+move; down; move; move
+box wid 1.2 "linefollower.ino"
+up; move from last box.n; move; right; move
+C2: circle "sensor.h"
+move from last box.e
+ellipse "config.h"
+arrow dashed from last ellipse.w to last box.e
+arrow from C1.se to last box.n
+arrow from C2.sw to last box.n

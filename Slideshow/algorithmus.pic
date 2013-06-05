@@ -1,0 +1,8 @@
+lineht = 0.4
+down
+circle rad 0.35i "Kalibriere" "Sensoren"; arrow
+E1: ellipse wid 1i "Lese" "Sensoren"; arrow
+box wid 1.15i "Berechne Position" "der Linie"; arrow
+E2: ellipse wid 1i "Korrigiere" "Fahrzeug"
+A: arc -> rad 1i from E2.e to E1.e
+" wiederhole" ljust at A.e

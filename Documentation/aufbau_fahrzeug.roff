@@ -1,0 +1,246 @@
+.COLLATE
+.DOCTYPE CHAPTER
+.CHAPTER_TITLE "Aufbau des Fahrzeugs"
+.CHAPTER 1
+.CHAPTER_STRING "Kapitel"
+.DOCHEADER
+.START
+Der prinzipielle Aufbau des Linienfolgers stellt sich als relativ
+schlicht dar.
+Im Groben lässt er sich in drei Teile zusammenfassen:
+.IL 1P
+.LIST DIGIT
+.ITEM
+Das Sensormodul mit Leucht- und Photodioden.
+.ITEM
+Das Mikrocontrollerboard mit der Motorsteuerung
+.ITEM
+Der fahrbare Untersatz mit Servo und Gleichstrommotor
+.LIST OFF
+.ILX CLEAR
+.SP
+.HEADING 1 "Teileliste"
+.IL 1P
+.LIST DASH
+.ITEM
+Fahrzeug: Opitec Go-Cart F 310
+.ITEM
+Mikrocontroller: Arduino Uno
+.ITEM
+Motorsteuerung: Adafruit Motor Shield
+.ITEM
+Motor: Opitec Gleichstrommotor
+.ITEM
+Servo: EMAX ES08A
+.ITEM
+jeweils 3 Infrarot-LEDs und -photodioden
+.LIST OFF
+.ILX CLEAR
+.HEADING 1 "Begründung der Teilewahl"
+.HEADING 2 "Chassis"
+.PP
+Bei dem fahrbaren Untersatz habe ich mich für einen Bausatz von dem
+Bastelversender \*[IT]Opitec\*[PREV] entschieden.
+Dieser bietet eine große Anzahl an verschiedensten Werkpackungen \[em]
+auch für den Unterricht.
+Der Arbeitsaufwand für den Zusammenbau der Modelle bleibt meist im
+Rahmen,
+zum einen durch die exzellente Anleitung,
+zum anderen dadurch,
+dass etwa das metallene Chassis bereits vorgestanzt war \[em]
+und musste nur noch gebogen werden.
+Das Modell,
+für das ich mich entschieden habe wird ursprünglich mit einer großen
+Blockbatterie betrieben.
+Ich habe einige Modifikationen vornehmen müssen,
+um Platz schaffen zu können. An stelle der Batterie sitzt der
+Mikrocontroller, die Lenkradhalterung musste der Servohalterung weichen
+und weitere Halterungen für das Sensormodul sowie für den neuen Akku
+wurden befestigt.
+Außerdem wurde der Motor durch einen mit höherer Betriebsspannung
+ersetzt.
+.HEADING 2 "Mikrocontroller"
+.PP
+Die Wahl des richtigen Mikrocontrollers stellt einen Schlüsselpunkt für
+den Verlauf des Projektes dar,
+denn hiervon hängt die Wahl der Programmiersprache und und der Aufwand
+für den Bau der Schaltung ab.
+Aufgrund dessen,
+dass ich verschiedene Bauteile (Servo/Motor/LEDs) ansteuern und
+zudem noch einen Akku als Spannungsquelle einsetzen wollte,
+kam nur ein Mikrocontrollerboard in Frage \[em]
+Der Aufwand für den Bau einer Platine mit Motorsteuerung inklusive
+variabler Spannungsversorgung würde sich als zu komplex und
+zeitintensiv gestalten. Ein weiterer Vorteil fertiger Boards ist häufig
+die bequeme Ansteuerung des Controllers über ein USB-Kabel,
+was die Handhabung beim Programmieren deutlich erleichtert.
+Diesen Punkten entsprechend,
+kann man aus einem bunten Sortiment von Boards wählen,
+z.B. Texas Instruments, PIC, BeagleBoard, Arduino, oder Raspberry Pi.
+Das BeagleBoard fällt weg,
+da dessen Preis zu hoch ist.
+Auch der Raspberry Pi kommt nicht in Frage,
+obwohl dessen Preis stimmt,
+fehlen ihm analoge Anschlüsse,
+was die Messung von Sensorwerten erschwert.
+Mikrocontrollerboards auf Basis in PIC-Chips fallen ebenfalls weg,
+denn für deren Programmierung ist der Kauf einer proprietären
+Entwicklungsumgebung nötig.
+Letztendlich habe ich mich für ein Arduino-Board entschieden,
+da ich bereits eines besaß und ich schon Erfahrungen damit sammeln
+konnte.
+.HEADING 3 "Arduino"
+.PP
+Was steckt hinter dem Namen ``\*[IT]Arduino\*[PREV]''?
+.BR
+Die Website schreibt sehr passend:
+.BLOCKQUOTE
+Arduino is an open-source electronics prototyping platform based on
+flexible,
+easy-to-use hardware and software.
+.RIGHT
+\[em]arduino.cc
+.BLOCKQUOTE OFF
+.PP
+Unter Arduino versteht man eine Plattform,
+bestehend aus Hard- und Software,
+auf deren Basis die einfache und schnelle Entwicklung von Prototypen
+(Rapid Prototyping) sowie der Bau von interaktiven Objekten und
+Umgebungen (Physical Computing)ermöglicht wird.
+.FLOAT
+.PSPIC Pictures/arduino_logo.eps 2i
+.QUAD CENTER
+.BLOCKQUOTE
+Arduino Logo
+.BLOCKQUOTE OFF
+.FLOAT OFF
+.JUSTIFY
+.PP
+Die Hardware bezeichnet eine Familie aus mehreren Mikocontrollerboards
+deren Kern AVR-Prozessoren bilden. Das Spektrum reicht hier von dem
+kleinen,
+in Kleidung tragbaren,
+\*[IT]Arduino LilyPad\*[PREV] bis hin zum,
+mit einem 84MHz Prozessor auf ARM-Basis ausgestatteten,
+\*[IT]Arduino Due\*[PREV].
+.PP
+Auf der Softwareseite ist eine Entwicklungsumgebung zu finden,
+mit der man Programme (auch ``Sketch'' genannt) komfortabel erstellen
+und diese dann auf den Controller laden kann.
+Das Arduino-Projekt richtet sich dabei vor allem an Künstler, Designer
+und Bastler.
+Aufgrund dieser technisch nicht vollversierten Zielgruppe, wird versucht
+den Umgang mit Mikrocontrollern zu erleichtern.
+.PP
+Beide Teile der Arduino-Plattform,
+sowohl Hardware als auch Software,
+sind quelloffen,
+d.h. Schaltpläne, Boarddesigns und Code der Entwicklungsumgebung und
+dazugehörige Programme sind frei zugänglich.
+.PP
+Das Projekt wurde 2005 gestartet,
+um italienischen Studenten günstige Geräte für den Bau von interaktiven
+Designprojekten zu geben.
+Aufgrund der breiten Zielgruppe und dem Fokus auf einfache Handhabung
+ist das Arduino-Projekt heute relativ populär\c\.
+.FOOTNOTE
+Man geht von etwa 300.000 produzierten Arduinoboards bis 2011 aus.
+.FOOTNOTE OFF
+Dies ist zum einen auch durch das Konzept der ``Shields'' gekommen \[em]
+viele der Arduinoboards haben Anschlüsse in einem bestimmten Format
+angeordnet,
+was das Aufstecken von von vorgefertigten Zusatzboards
+(\*[IT]Shields\*[PREV]) ermöglicht,
+die die Funktionalität das Controllers ohne zusätzliches Löten
+erweitern,
+etwa Ethernet- oder WLAN-Shields.
+Zusammen mit den Shields werden Softwarebibliotheken ausgeliefert,
+wodurch sich die Programmierung erleichtert.
+.PP
+Beim Mikrocontroller habe ich mich letztendlich für den Arduino Uno
+entschieden,
+welcher die Benutzung von Shields ermöglicht und fünf analoge Eingänge
+besitzt etwa für das Auslesen von Sensoren.
+Er ist das Allroundtalent im Arduino-Mikrocontrollersortiment.
+.PP
+.PSPIC Pictures/arduino_shields.eps 3.5i
+.QUAD CENTER
+.BLOCKQUOTE
+Stapelung mehrerer Shields übereinenader
+.BLOCKQUOTE OFF
+.JUSTIFY
+.br
+.\".DS CB
+.\".PSPIC Pictures/arduino_shields.eps 3i
+.\".QUAD CENTER
+.\".BLOCKQUOTE
+.\"Stapelung mehrer Shields übereinander
+.\".BLOCKQUOTE OFF
+.\".DE
+.\".JUSTIFY
+.HEADING 2 "Motor und Servo"
+.PP
+Das Vorhandensein eines Motorshields für die Arduino-Plattform hat mich
+zu diesen Mikrocontrollern gebracht.
+Ich spreche hier vom ``Ladyada Motor Shield'',
+der die Steuerung von bis zu vier Gleichstommotoren oder zwei
+Schrittmotoren gleichzeitig ermöglicht \[em]
+für meine Zwecke vollkommen ausreichend. Auch ist dessen Schaltplan frei
+verfügbar und es war relativ günstig
+erhältlich.
+Um die Sensoren anschließen zu können habe ich das Motorshield ein wenig
+modifizieren müssen
+.PP
+Der Servo wurde durch kein konkretes Kriterium ausgewählt \[em]
+ich habe ihn einfach aus einem Elektronik-Starterset entnommen.
+.HEADING 2 "Sensoren"
+.PP
+Bei den Sensoren habe ich mich für drei Paare aus jeweils einer
+Infrarot-LED und einer Infrarot-Photodiode entschieden.
+Infrarot deswegen,
+da im Infrarotbereich die Empfindlichkeit von Silizium-Photodioden besonders hoch
+liegt (im Bereich von 880 bis 950nm).
+.PP
+Das Prinzip sieht wie folgt aus: Die Leuchtdioden strahlen auf den
+Boden,
+der das Licht dann wieder reflektiert.
+Mit Hilfe der Photodioden wird gemessen,
+wie viel reflektiert wird und man kann dadurch Kontraste unterscheiden,
+bzw. zwischen hell (viel Reflexion) und dunkel (wenig Reflexion).
+.HEADING 2 "Genereller Aufbau"
+.PP
+Der generelle Aufbau des Linienfolgers beginnt mit dem Chassis,
+bei dem die Lenkung von einen Servomotor übernommen wird.
+Am Platz, an dem ursprünglich eine große Blockbatterie sitzen sollte,
+ist der Arduino Uno Mikrocontroller festgeschraubt.
+Auf dem Controller selber ist der Motorshield platziert,
+an dem wiederum der Motor und der Servo angeschlossen sind.
+.PP
+Das Sensormodul ist an der Vorderseite des Fahrzeugs befestigt.
+Ich habe hierfür eine eigene Platine zusammen gelötet,
+über die die LEDs mit den 3V eines Digitalpins verbunden werden und die
+Photodioden an einem 5V Anschluss des Arduino Uno hängen.
+.PP
+Die analogen Anschlüsse sind ebenfalls mit den 5V and den Photodioden
+verbunden.
+Um ein Kurzschließen zu vermeiden wird ein 10 kOhm Widerstand dazwischen
+geschaltet.
+Die Photodioden sind ebenfalls an dem Widerstand und an die Masse
+angeschlossen.
+Im Ausgangszustand,
+wenn die Photodiode kein Licht empfängt,
+ist deren Widerstand sehr hoch,
+wodurch die 5V fast vollständig an den analogen Anschlüssen anliegen.
+Trifft nun Licht auf die Diode,
+verringert sich deren Widerstand und ein Teil der 5V fließen zur Masse
+ab,
+wodurch sich der an den analogen Anschlüssen anliegende Strom
+verringert.
+Dadurch können dann die Kontraste gemessen werden.
+.PSPIC Pictures/schaltung.eps 5i
+.QUAD CENTER
+.BLOCKQUOTE
+Schaltplan für die Sensoren
+.BLOCKQUOTE OFF
+.JUSTIFY
+
